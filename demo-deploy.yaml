@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   # Unique key of the Deployment instance
-  name: demo-deployment
+  name: repo-yaml-deploy
 spec:
   # 3 Pods should exist at all times.
   replicas: 3
