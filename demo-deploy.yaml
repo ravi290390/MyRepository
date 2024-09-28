@@ -19,7 +19,7 @@ spec:
       labels:
         # Apply this label to pods and default
         # the Deployment label selector to this value
-        app: nginx
+        app: codemine
     spec:
       containers:
       - name: nginx
