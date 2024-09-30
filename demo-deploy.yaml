@@ -8,7 +8,7 @@ spec:
   replicas: 3
   selector:
     matchLabels:
-      app: codemine
+      app: nginx
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -19,7 +19,7 @@ spec:
       labels:
         # Apply this label to pods and default
         # the Deployment label selector to this value
-        app: codemine
+        app: nginx
     spec:
       containers:
       - name: nginx
