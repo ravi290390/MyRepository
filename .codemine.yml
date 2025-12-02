@@ -1,0 +1,78 @@
+# This is a starter pipeline yaml configuration
+# This demonstrates multiple stages & parallel jobs execution
+
+version: 1.0
+
+stages:
+  #List of stages in the pipeline.
+  - stage1
+  - stage2
+
+jobs:
+  #Job definition one-by-one 
+  AlphaJob:  #Name of first job
+    type: custom-container
+    #This is custom container job, you can select any other jobs(Refer CodeMine Help)
+    description: This is a First job of the starter pipeline
+    stage: stage1 #Stage,this job is associated.
+    context:
+    #Use this to access context, where you have saved sensitive variables and files needed for pipeline execution
+    after:
+    #Use this to define the flow of job job execution within a stage.(we don't have to provide this value, as this is a first job)
+    timeout: 15 
+    #Time required for job execution(Calcuated in minutes,default is 60)
+    priority: major
+    #On job failure,determines whether pipeline execution proceed to next job or not(major/minor,major is default)
+    retry: 
+      max: 1
+      delay: 1
+      when: 
+      - any_failure
+    parameters:
+      image:
+        type: CodeMine 
+        #This image is served from CodeMine Registry, we support latest images as per job type(You can also import images from third party registry).
+        path: alpine:latest
+      requiredArtifacts:
+      #Any artifacts from previous jobs, required for this execution needed to be listed here
+      beforeScripts: 
+      - echo "Precheck for AlphaJob is executed"
+      scripts:
+      - echo "AlphaJob(stage1) is executed"
+      #Add your scripts here
+      afterScripts: 
+      - echo "Postcheck and cleanup for AlphaJob is executed"
+      capture:
+        artifacts:
+          #Any artifacts needed to be captured in this job,after execution needed to be configured here
+
+  BetaJob:
+    type: custom-container
+    stage: stage2
+    parameters:
+      image:
+        type: CodeMine
+        path: alpine:latest
+      scripts:
+      - echo "BetaJob(stage2) is executed parallelly with GammaJob(stage2)"
+  GammaJob:
+    type: custom-container
+    stage: stage2
+    parameters:
+      image:
+        type: CodeMine
+        path: alpine:latest
+      scripts:
+      - echo "GammaJob(stage2) is executed parallelly with BetaJob(stage2)"
+  DeltaJob:
+    type: custom-container
+    stage: stage2
+    after:
+    - GammaJob
+    - BetaJob
+    parameters:
+      image:
+        type: CodeMine
+        path: alpine:latest
+      scripts:
+      - echo "Delta(stage2) is after BetaJob & GammaJob executed"
